@@ -8,6 +8,23 @@ career AI into a brutal, fast, boss-grade challenge.
 > and signing keys are intentionally **not** published. Grab the playable build from the
 > [Releases](../../releases) page.
 
+## ⬇️ Download
+
+**[Download the Hell Version (v46) APK »](https://github.com/boyoftime/beach-buggy-racing-hell-version/releases/download/v46/BBR1_v46_boss_elite_signed.apk)**
+— mod for Beach Buggy Racing **v2026.05.18** (Android). Currently a **beta** — still being made more amazing.
+
+## 📸 Screenshots
+
+![Someless Tricks title screen](gallery/hell_v46_shot_1.png)
+
+| Garage | Powerups |
+|---|---|
+| ![Garage](gallery/hell_v46_shot_2.png) | ![Powerups](gallery/hell_v46_shot_3.png) |
+
+| Race series | Hell tracks |
+|---|---|
+| ![Race series](gallery/hell_v46_shot_4.png) | ![Tracks](gallery/hell_v46_shot_5.png) |
+
 ## What the mod does
 
 **Visuals**
