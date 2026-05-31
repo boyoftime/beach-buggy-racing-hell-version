@@ -1,0 +1,415 @@
+BBR1 Android Mod Build History
+
+Latest: v41
+
+v1 - Boss Replay
+APK: versioned_builds\BBR1_v1_boss_replay_signed.apk
+
+v2 - Paid Cars
+APK: versioned_builds\BBR1_v2_paid_cars_signed.apk
+
+v3 - All Drivers Charge 1 + Reusable Specials
+APK: versioned_builds\BBR1_v3_all_drivers_charge1_repeat_signed.apk
+
+v4 - Daily Reward + Daily Challenge Unlock
+APK: versioned_builds\BBR1_v4_daily_reward_challenge_unlock_signed.apk
+
+v5 - Menu Flag PNG Edit
+APK: versioned_builds\BBR1_v5_menu_flag_signed.apk
+Edited PNG: Master bbr afp cracker\extracted\Assets\VuTextureAsset\UI\Icon\Menu_Flag.png
+
+v6 - Menu Flag PNG Edit Update
+APK: versioned_builds\BBR1_v6_menu_flag_signed_update.apk
+Edited PNG: Master bbr afp cracker\extracted\Assets\VuTextureAsset\UI\Icon\Menu_Flag.png
+
+v7 - Menu Flag PNG Edit Update
+APK: versioned_builds\BBR1_v7_menu_flag_signed_update.apk
+Edited PNG: Master bbr afp cracker\extracted\Assets\VuTextureAsset\UI\Icon\Menu_Flag.png
+
+v8 - Menu Flag PNG Edit Update
+APK: versioned_builds\BBR1_v8_menu_flag_signed_update.apk
+Edited PNG: Master bbr afp cracker\extracted\Assets\VuTextureAsset\UI\Icon\Menu_Flag.png
+
+v9 - Lava Theme + Mushroom World (match PC mod)
+APK: versioned_builds\BBR1_v9_lava_mushrooms_signed.apk
+Built from v7 base (keeps all code mods) + new Assets.apf.
+ANDROID TEXTURE CAVEAT: lava re-skin applied ONLY to compressed (ETC1/ETC2) color
+textures. Uncompressed textures (RGB565/RGBA fmt 6407/6408 -> mostly *_n/_N normal
+maps + Water/Fresnel) are passed through ORIGINAL: re-encoding them crashes the
+Samsung GLES driver in glTexImage2D (uncompressed NPOT upload). Skybox + Plant
+textures also passed through original (volcano look comes from the model+cube+fog,
+and original leaves avoid square-lava cards). To re-toggle, set the texture .png
+mtime above/below extracted/.extract_time before 3_pack.py.
+
+Changes (all maps): LavaA lava color textures (compressed only); Skybox_Volcano + HazyOrange_cube + orange fog
+(incl. menu Background + all menu fog zones); all plants/foliage -> mushrooms + mangroves;
+mangroves shrunk to 0.45 on non-swamp maps; all plants removed from menu Background.
+Scripts: make_all_maps_lava_theme.py, apply_deathbat_atmosphere.py, mushroomify_plants.py,
+mod_android_menu_mangroves.py (in Master bbr afp cracker).
+Signed with someless.keystore (same signature as prior versions -> installs as update).
+
+v10 - Hell Props Everywhere
+APK: versioned_builds\BBR1_v10_hell_signed.apk
+Added Death Bat Alley "hell" props to every map + menu Background:
+~70 breakable skeletons (A/B/C) per map + 10 flying Death Bats (NPC_Deathbat_Flying,
+self-contained; attack-bats skipped - they need LavaA scripting). Placed at existing
+ground positions; bats raised +18 on Z. Original game models/textures (no re-encode).
+Deps added to all projects. Script: add_hell_props.py. Built on v7 base + v9 texture rules.
+Menu boots clean (bats load OK). NOTE: verify a race in-game - flying-bat motion outside
+boss battle is unverified.
+
+v11 - Extreme Career Bosses
+APK: versioned_builds\BBR1_v11_extreme_bosses_signed.apk
+Edited VuDBAsset/AiPersonalityDB for all 11 bosses (BossHula = Leilani + rest):
+Performance TopSpeed 3.5 / Accel 6 / Handling 4 / Toughness 10 (grand-prix speed);
+ThrottleDownFrequency 999 (never ease off); Aggro 5; ReactionTime 0.05;
+AbilityFrequency 1 + BossPowerUpFrequency 1 + BoostFrequency 3 (relentless);
+offensive powerup/behavior weights cranked; RaceScript DesiredCarPack=Ahead.
+Script: make_bosses_extreme_android.py. Boots clean. TUNE if too hard/easy (values
+are multipliers off 1.0 baseline). Built on v10 (hell props) state.
+
+v12 - Boss Car Grand-Prix Speed (Dune engine)
+APK: versioned_builds\BBR1_v12_boss_grandprix_signed.apk
+Root fix for "boss too slow": the AI Performance multiplier (v11) could not
+override the car's throttle-limited engine. Bosses drive the "Dune" car (CarDB),
+whose stage Max RPM was 5000-6750 (vs Formula 9000-12500). Raised Dune stage
+Max RPM -> 11000/12000/13000/14000/15000 and Headroom RPM 800->1500 (grand-prix+).
+Boss car assignment lives in VuSpreadsheetAsset/Opponents.bin (NOT decoded), so
+the boost is in CarDB and also affects the player IF they drive a Dune. Script: inline.
+Keeps v11 aggressive AI. Boots clean.
+
+v13 - Special Ability Charge Time = 20s
+APK: versioned_builds\BBR1_v13_charge20_signed.apk
+Driver special-ability charge time lives in VuSpreadsheetAsset/Drivers.bin (raw
+binary spreadsheet, NOT decoded to json). It is ONE BYTE per driver = seconds,
+at offsets 200 + 76*i for i in 0..10 (11 drivers): 200,276,352,...,960.
+Stock defaults were 9-16s; the "Instant Special" mod (input/Assets.apf already
+had it) set all to 1. Set all 11 -> 20 (0x14). Found by diffing v2 (pristine)
+vs v3 (charge1) Drivers.bin. Edit the byte + 3_pack picks it up as a raw .bin edit.
+Boots clean. Built on v12 state.
+
+v14 - Charge 60s + Dune Engine Sound Fix
+APK: versioned_builds\BBR1_v14_charge60_soundfix_signed.apk
+1) Drivers.bin charge bytes 20 -> 60 (1 minute) at offsets 200+76*i (11 drivers).
+2) Car sound glitch fix: v12 set Dune Max RPM to 15000 with stock V10_Viper engine
+   audio (designed ~6750) -> pitch out of range -> sound cut/stutter. Lowered Dune
+   stage Max RPM to Formula's proven range 9000-12500 and switched Engine.Audio.Run
+   to Engine/F1_V12 (high-rev sound). Still grand-prix fast, clean audio. Boots clean.
+
+v15 - Boss Monster Car (harder bosses)
+APK: versioned_builds\BBR1_v15_boss_monster_signed.apk
+Root cause bosses still beatable: the Dune car was HEAVY + DRAGGY (Mass 1000,
+Drag 0.5) vs Formula (600 / 0.25), so high RPM didn't translate to speed/accel.
+Set Dune Mass 1000->500 and Drag Coeff 0.5->0.18 (lighter+slipperier than Formula)
+=> savage acceleration + high top speed. Kept 12500 RPM + F1_V12 audio + v11 max-
+aggression AI. Side effect: player-driven Dune is also OP. Boots clean.
+TUNE: Mass/Drag in CarDB.Dune; AiPersonality Performance/Aggro for attacks.
+Other levers if still too easy: ConstantDB CarChamps Opponents[].Speed (0-5),
+or decode Opponents.bin to set boss car=maxed Supercar.
+
+v16 - All AI Hard (every race mode)
+APK: versioned_builds\BBR1_v16_all_ai_hard_signed.apk
+Hardened all 13 racing AI personalities in AiPersonalityDB (Default, ClassE..ClassA
++Plus, ClassALoser, Challenge, DuelSkeleton): Performance TopSpeed 2.6/Accel 4/
+Handling 3/Toughness 6, Aggro 4, ReactionTime 0.1, AbilityFrequency 3, BoostFreq 4,
+ThrottleDown 999, offensive powerup/behavior weights, RaceScript Ahead. ConstantDB:
+Games/*/Ai AiBrain Lazy->Default + AiSkill 0->10; CarChamps all 20 opponents Speed->5.
+Bosses keep stronger v11 profile; Tutorial left easy. Script: make_all_ai_hard_android.py.
+NOTE: AI cars that are Dune benefit from v15 monster stats; speed of other AI cars
+depends on whether Performance multiplier applies in-engine (verify in-race). Boots clean.
+
+v17 - Insane AI Speed (career unbeatable attempt)
+APK: versioned_builds\BBR1_v17_ai_insane_signed.apk
+Set Performance to INSANE on all 24 non-Tutorial AI personalities:
+{Toughness 30, Handling 6, TopSpeed 6, Acceleration 10}. Dune pushed further:
+Mass 500->350, Drag 0.18->0.12 (guarantees Dune-driving AI are rockets).
+TEST NEEDED: confirms whether engine honors AiPersonality.Performance.TopSpeed.
+If AI now dominate -> it works. If still beatable -> Performance is ignored for
+non-Dune AI cars; fallback = decode VuSpreadsheetAsset/Opponents.bin to set each
+opponent's car=light/fast (or boost the specific class cars in CarDB). Boots clean.
+
+v18 - All Drivers 1000HP (max car stats)
+APK: versioned_builds\BBR1_v18_all_1000hp_signed.apk
+Career series HP tier (100/250/1000) gates AI car stats; Leilani's 100hp series = slow.
+Global fix: ConstantDB.Game.MinCarStatValue 0 -> 20 (=MaxCarStatValue) forces EVERY
+car to max stats (1000hp) in every series, incl AI in low-HP series. Also maxed all
+20 CarChamps opponent stat levels (Handling/Accel/Speed/Tough/Skill ->5).
+SIDE EFFECT: player's cars are also floored to max stats. Truly-AI-only alternative =
+reverse-engineer VuSpreadsheetAsset/Opponents.bin (236-byte records, no strings).
+Keeps v17 insane AI Performance + Dune monster. Boots clean.
+
+v19 - Career 1000HP Chaos Opponents
+APK: versioned_builds\BBR1_v19_career_1000hp_chaos_signed.apk
+Decoded VuSpreadsheetAsset/Opponents.bin spreadsheet layout: 176 rows, 236-byte
+row records, columns Name/Car/Driver/Stage/Accel/Speed/Handling/Tough/Personality/
+Skill/Brain. Set every non-tutorial opponent to Stage 3 (1000HP tier), Accel/Speed/
+Handling/Tough 5, and Skill 10. Forced all boss rows + DuelSkeleton rows to use the
+v15-v17 monster Dune car while keeping their boss personalities/brains. Tutorial
+rows left stock so the intro should not soft-lock. Script:
+make_career_1000hp_chaos_android.py. Built on v18 base with new Assets.apf and
+signed with someless.keystore; SHA-256 cert digest matches v18, so it installs as
+an update.
+
+v20 - Career 1000HP Cups + High-Speed Grip
+APK: versioned_builds\BBR1_v20_career_1000hp_grip_signed.apk
+Root fix for career cards still showing 100/250HP: VuDBAsset/SeriesDB controls the
+career series HP tier. Set SeriesA/B/C/D/E/F/G/H/I/J/G2 Stage -> 3 so Easy Street,
+Coconut Cup, Sunshine Sprint, Chowder Bowl, and later cups all use/display 1000HP.
+Improved 1000HP AI cornering: CarDB Default steering angle 58, faster steering,
+more stability/downforce, lower powerslide friction; all cars get stronger braking,
+lower drag where needed, stiffer suspension, higher rollover/wheelie resistance.
+SurfaceDB grip raised for roads/offroad; ice/snow/sand/mud made less punishing.
+AiPersonalityDB handling raised to 9, avoidance 7, quicker reaction, stronger
+powerslide/boost/spike/throttle bendiness, MaximumLead forced to 0 where present.
+Tutorial handling left stock. Script: make_career_1000hp_grip_android.py. Built on
+v19 base and signed with someless.keystore; cert digest matches v19.
+
+v21 - All Career Stage Badges Show 1000HP
+APK: versioned_builds\BBR1_v21_all_stage_badges_1000hp_signed.apk
+Screenshot showed career cards still displayed 100/250HP because SinglePlayer_SeriesSelect
+can draw the HP badge from UI/Icon/Stage0..Stage3 textures based on profile/progression,
+not only SeriesDB. Copied Stage3 1000HP artwork over Stage0, Stage1, and Stage2, then
+touched mtimes so 3_pack includes the PNG edits. Confirmed the APF pack included
+[png] VuTextureAsset/UI/Icon/Stage0, Stage1, and Stage2. Gameplay/data changes from
+v19/v20 remain: opponents and series stages are 1000HP, plus high-speed grip tuning.
+Script: make_all_stage_badges_1000hp_android.py. Signed with someless.keystore; cert
+digest matches v20.
+
+v22 - Normal HP UI + Stable Physics Restore
+APK: versioned_builds\BBR1_v22_normal_ui_stable_physics_signed.apk
+Undo for v21 badge swap: restored original UI/Icon/Stage0, Stage1, Stage2, and Stage3
+PNG art so the UI can show the normal HP badge images again. Also backed out the v20
+high-grip CarDB/SurfaceDB/AiPersonalityDB edits after road shaking was reported; restored
+those three DBs from the pre-v20 backup. Left SeriesDB and VuSpreadsheetAsset/Opponents.bin
+unchanged so career 1000HP chaos data remains. Script:
+make_v22_restore_ui_and_stable_physics_android.py. Signed with someless.keystore; cert
+digest matches v21. Installed successfully on device R5CT62HT9EV.
+
+v23 - AI Mainline + Anti-Flip
+APK: versioned_builds\BBR1_v23_ai_mainline_antiflip_signed.apk
+Goal: enemies stay stable at 1000HP and stop zigzagging. Removed all NextAlternate
+AI waypoint links from VuTemplateAsset/Levels so AI follows the primary racing line
+instead of taking alternate branches. Tuned AiPersonalityDB to reduce pickup seeking,
+dropped-powerup dodging, aggression, avoidance weaving, and powerslide/boost/spike/
+throttle bendiness while keeping strong speed/handling/toughness. Added conservative
+anti-flip values in CarDB only: Rollover Resistance 5.0, Wheelie Resistance 4.0, and
+Default Chassis Stability 8/10/8. Did not touch SurfaceDB, springs, drag, or aero so
+the v22 no-shaking restore should remain intact. Script:
+make_v23_ai_mainline_antiflip_android.py. Signed with someless.keystore; cert digest
+matches v22. Installed successfully on device R5CT62HT9EV.
+
+v24 - AI Mainline, No Anti-Flip Physics
+APK: versioned_builds\BBR1_v24_ai_mainline_no_antiflip_signed.apk
+Undo for road shaking reported in v23. Restored only CarDB from the v23 pre-patch
+backup, removing the anti-flip Rollover Resistance/Wheelie Resistance/Chassis Stability
+changes. Kept v23 AiPersonalityDB cleanup and level waypoint edits: AI still has no
+NextAlternate waypoint branches and reduced avoidance/pickup-seeking zigzag behavior.
+Script: make_v24_revert_antiflip_keep_ai_android.py. Signed with someless.keystore;
+cert digest matches v23. Installed successfully on device R5CT62HT9EV.
+
+v25 - Volcanic Character Skins
+APK: versioned_builds\BBR1_v25_volcanic_character_skins_signed.apk
+Repainted all 10 visible character diffuse textures under VuTextureAsset/Character
+with a dark scorched volcanic palette and orange lava-vein cracks. Normal maps and
+texture metadata were left unchanged. First dense pass was restored from backup and
+replaced with a softer vein pass so faces/clothes remain readable. Preview:
+volcanic_character_contact_v25_soft.png. Script:
+make_v25_volcanic_character_skins_android.py. Built on v24, so normal HP UI,
+stable CarDB/no anti-flip shaking, career chaos, and AI mainline cleanup remain.
+Signed with someless.keystore; cert digest matches v24. Installed successfully on
+device 101132535J112452.
+
+v26 - Selective Volcanic Character Accents
+APK: versioned_builds\BBR1_v26_selective_volcanic_accents_signed.apk
+Correction for v25: restored original character skin colors from the v25 backup, then
+applied sparse lava accents only to non-skin/low-brightness texture areas. Avoids the
+global red filter look and masks cracks away from likely face/skin pixels so faces and
+skin remain readable. Preview: volcanic_character_contact_v26_selective.png. Script:
+make_v26_selective_volcanic_accents_android.py. Built on v25/v24 state, keeping normal
+HP UI, stable CarDB/no anti-flip shaking, career chaos, and AI mainline cleanup. Signed
+with someless.keystore; cert digest matches v25. Installed successfully on device
+101132535J112452.
+
+v27 - Ghost Character Skins
+APK: versioned_builds\BBR1_v27_ghost_character_skins_signed.apk
+Restored original character diffuse textures from the v25 pre-edit backup, then applied
+a ghost-style pass: skin-like pixels become pale blue/gray while preserving shading,
+dark face-adjacent details become stronger eye/mouth shadows, bright eye-like details
+near skin get a cold cyan lift, and clothes/armor are cooled/desaturated without a red
+filter. Preview: ghost_character_contact_v27.png. Script:
+make_v27_ghost_character_skins_android.py. Built on v26/v24 state, keeping normal HP UI,
+stable CarDB/no anti-flip shaking, career chaos, and AI mainline cleanup. Signed with
+someless.keystore; cert digest matches v26. Installed successfully on device
+101132535J112452.
+
+v28 - Fire Body Character Skins
+APK: versioned_builds\BBR1_v28_fire_body_character_skins_signed.apk
+Restored original character diffuse textures from the v25 pre-edit backup, then applied
+a Human-Torch-style fire-body texture pass: opaque body/clothes are converted to a
+charred black/dark-red base with strong yellow/orange lava cracks and hot UV-island
+edge glow. This replaces the ghost look from v27 and targets the user's reference of
+a dark body with fire lines. Real external flames would require model/effect edits;
+this version is texture-only. Preview: fire_body_character_contact_v28.png. Script:
+make_v28_fire_body_character_skins_android.py. Built on v27/v24 state, keeping normal
+HP UI, stable CarDB/no anti-flip shaking, career chaos, and AI mainline cleanup. Signed
+with someless.keystore; cert digest matches v27. Installed successfully on device
+101132535J112452.
+
+v29 - Face-Safe Fire Body Character Skins
+APK: versioned_builds\BBR1_v29_face_safe_fire_body_skins_signed.apk
+Correction for v28: faces were too dark/not readable. Restored original diffuse textures
+again, built a protected face/skin mask, preserved those pixels with a warm readable tint,
+and applied the charred fire-crack/edge-glow treatment only to non-skin clothing/body
+texture areas. Preview: fire_body_character_contact_v29_face_safe.png. Script:
+make_v29_face_safe_fire_body_skins_android.py. Built on v28/v24 state, keeping normal
+HP UI, stable CarDB/no anti-flip shaking, career chaos, and AI mainline cleanup. Signed
+with someless.keystore; cert digest matches v28. Installed successfully on device
+101132535J112452.
+
+v30 - Zombie Wounds Character Skins
+APK: versioned_builds\BBR1_v30_zombie_wounds_character_skins_signed.apk
+Restored original character diffuse textures from the v25 pre-edit backup, then applied
+a stylized zombie pass: skin-like pixels get a pale undead tint, sparse ragged wound
+marks are painted on skin/body/clothing areas, and red blood splatters/drips are masked
+to opaque texture islands while bright eye/face details are protected. Preview:
+zombie_wounds_character_contact_v30.png. Script:
+make_v30_zombie_wounds_character_skins_android.py. Built on v29/v24 state, keeping
+normal HP UI, stable CarDB/no anti-flip shaking, career chaos, and AI mainline cleanup.
+Signed with someless.keystore; cert digest matches v29. Installed successfully on
+device 101132535J112452.
+
+v31 - Stone Lava Golem Character Skins
+APK: versioned_builds\BBR1_v31_stone_lava_golem_signed.apk
+Restored original character diffuse textures from the v25 pre-edit backup, then applied
+a full-body "lava golem" pass to all 10 Character/*/*.png diffuse atlases (face INCLUDED -
+no face-safe mask, user wanted a full stone golem head). Each opaque texel is converted to
+a mid-gray granite base that preserves the original shading via luminance, with two-octave
+procedural granite mottle for stone grain. A branching fissure network is carved across the
+body and filled with BRIGHT molten LavaA veins: orange seams, yellow-white hottest cores,
+an inner heat glow that warms nearby stone, and a hot molten rim on UV-island edges. Normal
+maps (_n) left stock. Preview: versioned_builds\stone_lava_golem_contact_v31.png. Script:
+make_v31_stone_lava_golem_skins_android.py. Built on v30 base APK (swaps only Assets.apf;
+keeps normal HP UI, stable CarDB/no anti-flip shaking, career chaos, AI mainline cleanup).
+Signed with someless.keystore (alias someless); cert SHA-256 ad94...4d44 matches v30, so it
+installs as an update. Installed successfully on device 101132535J112452.
+
+v32 - Volcanic Fire-Body Golem Character Skins
+APK: versioned_builds\BBR1_v32_volcanic_fire_body_golem_signed.apk
+Follow-up to v31 (grey granite read as plain stone). Restored original character diffuse
+textures from the v25 backup, then repainted all 10 Character/*/*.png as ACTIVE VOLCANIC
+ROCK: a dark charred black/red basalt crust (warm r>g>b, original shading kept via
+luminance + basalt grain), a soft low-frequency magma underglow so molten patches seem to
+glow beneath the crust, a denser/brighter fire-crack vein network (44 veins, orange seams,
+yellow-white hot cores at crack>0.55), stronger inner heat halo around veins, and a hot
+molten rim on UV-island edges. Full body incl. face (golem look). Normal maps (_n) stock.
+Preview: versioned_builds\volcanic_fire_body_golem_contact_v32.png. Script:
+make_v32_volcanic_fire_body_golem_skins_android.py. Built on v31 base APK (swaps only
+Assets.apf; keeps all prior code/data mods). Signed with someless.keystore; cert matches
+prior versions, installs as an update. Installed successfully on device 101132535J112452.
+
+v33 - Colorful Fiery Scary Character Skins
+APK: versioned_builds\BBR1_v33_colorful_fiery_scary_signed.apk
+Fix for v31/v32 looking dim and single-colored. Restored original character diffuse
+textures from the v25 backup, then KEPT each character's original multi-color identity
+(clothes/skin/features stay distinct + clearly readable) while making it pop: vibrance
+boost (SAT 1.55) + contrast 1.16, slight shadow-deepen on very dark pixels for menace.
+Glowing fire cracks are layered ON TOP via screen blend (40-vein branching network,
+orange seams, yellow-white hot cores at crack>0.55) plus a heat halo and a hot ember rim
+on UV-island edges - so the body keeps its colors between the cracks. Result: vivid,
+clearly-visible, scary + fun. Full body incl. face. Normal maps (_n) stock. Preview:
+versioned_builds\colorful_fiery_scary_contact_v33.png. Script:
+make_v33_colorful_fiery_scary_skins_android.py. Built on v32 base APK (swaps only
+Assets.apf; keeps all prior code/data mods). Signed with someless.keystore; cert matches
+prior versions, installs as an update. Installed successfully on device 101132535J112452.
+
+v34 - Zombie Blood-Wounds Character Skins (vivid + readable)
+APK: versioned_builds\BBR1_v34_zombie_blood_wounds_signed.apk
+Builds on the v33 readable approach. Restored original character diffuse from the v25
+backup, kept each character's multi-color identity boosted vivid (SAT 1.45 + contrast
+1.12 so they stay bright/clear), then applied a heavy zombie pass: sickly undead pallor
+on skin-like pixels (kept readable), MANY ragged dark wounds/gashes (40 per atlas), and
+lots of bright red blood splatters + drips + spray (62 seeds) masked to opaque islands.
+Bright eye/face details protected so faces still read through the gore. v33 fire cracks
+intentionally NOT used (fire + blood reads muddy; offered to merge on request). Full body
+incl. face. Normal maps (_n) stock. Preview: versioned_builds\zombie_blood_wounds_contact_v34.png.
+Script: make_v34_zombie_blood_wounds_skins_android.py. Built on v33 base APK (swaps only
+Assets.apf; keeps all prior code/data mods). Signed with someless.keystore; cert matches
+prior versions, installs as an update. Installed successfully on device 101132535J112452.
+
+v35 - Zombie MAX Blood Character Skins
+APK: versioned_builds\BBR1_v35_zombie_max_blood_signed.apk
+User wanted much more blood than v34. Same vivid/readable base + undead pallor + 40 ragged
+wounds, but blood massively increased: 170 splatter seeds (radius up to 16) with 70% long
+drips (up to 80px, width to 3) and dense 5-14 dot spray each, PLUS 26 large gory pools/smears
+for soaked areas; blood blur raised to 0.45. Blood blend strength raised (mix ~0.9, threshold
+0.03) with darker congealed edges where thickest (blood_amt>0.6). Faces/eyes still protected.
+Full body incl. face; normal maps (_n) stock. Preview: versioned_builds\zombie_max_blood_contact_v35.png.
+Script: make_v35_zombie_max_blood_skins_android.py. Built on v34 base APK (swaps only
+Assets.apf; keeps all prior code/data mods). Signed with someless.keystore; cert matches
+prior versions, installs as an update. Installed successfully on device 101132535J112452.
+
+v36 - Boss Hell Power Spam
+APK: versioned_builds\BBR1_v36_boss_hell_power_spam_signed.apk
+Boss difficulty push with no CarDB physics edits. AiPersonalityDB boss skins now use
+AbilityFrequency 0.2, BossPowerUpFrequency 0.2, stronger performance, heavier offensive
+powerup weights, and constant Ahead pack desire. CarEffectDB ability/effect buffs:
+BeachBro drops 55 larger balls and shoots 32 faster balls; Hula/Leilani flower fields
+cover radius 3.75, last longer, and apply strong stop-like damping; Bunny, Tribal,
+Disco, Roller, Lucha, Rad, Skeleton, and Alien abilities are longer/faster/bigger.
+Common boss-favored powerups such as DeathBat, Fireball, Tornado, Scattershot,
+RemoteControl, Earthquake, FreezeRay, Confusion, LowGravity, and Oil effects are also
+stronger. Script: make_v31_boss_hell_power_spam_android.py. Built from the v35 APK base
+with the patched APF, keeping zombie MAX blood skins, normal HP UI, stable CarDB/no
+anti-flip shaking, career chaos, and AI mainline cleanup. Signed with someless.keystore;
+cert digest matches v35. Installed successfully on device 101132535J112452.
+
+v37 - Beach Bro Grounded Balls
+APK: versioned_builds\BBR1_v37_beach_bro_grounded_balls_signed.apk
+Fix for v36 Beach Bro balls flying off. Kept the chaotic quantity from v36 (DropCount 55,
+ShootCount 32, Duration 6) but restored ball behavior closer to stock so they stay on the
+road: DropSpeed 35, ShootSpeed 145, DropSpread 260, ShootSpread 40, LinearDamping 0.35,
+Mass 10, SelfCollisionTime 5, Radius 0.85, LifeTime 18, BeachBroVictim VerticalSpeed 60.
+Script: make_v37_beach_bro_grounded_balls_android.py. Built on v36 base and keeps all boss
+hell power-spam changes except this grounded Beach Bro ball tuning. Signed with someless
+keystore; cert digest matches v36. Installed successfully on device 101132535J112452.
+
+v39 - Boss No-Wheelie Launch
+APK: versioned_builds\BBR1_v39_boss_no_wheelie_launch_signed.apk
+Built from v38_hud_icons base to preserve the latest APK chain. Fixes boss launch wheelie /
+front tire lift by lowering only boss AiPersonalityDB Performance.Acceleration from 12.0 to
+6.0 and capping phase RaceScript acceleration to Early 0.85, Mid/Late 1.0. Boss TopSpeed 8.0,
+Handling 9.0, Toughness 40.0, ability spam, powerups, and v37 Beach Bro grounded-ball behavior
+are kept. CarDB was not touched, avoiding the previous road-shaking stability issue.
+Script: make_v39_boss_no_wheelie_launch_android.py. Signed with someless.keystore; cert digest
+matches v38. Installed successfully on device 101132535J112452.
+
+v40 - Credits Someless Names
+APK: versioned_builds\BBR1_v40_credits_someless_names_signed.apk
+Built from v39 base. Credits text patched safely in-place in VuStringAsset language bins:
+Rana and Haedan -> LicordDev, Elizabeth "Timm" Sewell -> ANYAOGU .C. ZABDIEL, and
+Third Party Software -> someless. The first rebuilt-string-pool attempt crashed at launch,
+so it was replaced by this fixed-length safe build using make_v40_credits_someless_names_safe_android.py.
+Signed with someless.keystore; cert digest matches v39. Installed successfully and launched cleanly
+on device 101132535J112452. Screenshot: screenshots\v40_fixed_launch_20260531_194046.png.
+
+v41 - Career Driver Special Spam
+APK: versioned_builds\BBR1_v41_career_driver_special_spam_signed.apk
+Built from v40 base. Normal racing AI personalities now use boss-like special/powerup cadence:
+AbilityFrequency 0.2, BossPowerUpFrequency 0.2, BoostFrequency 1, SpikesFrequency 20, plus
+boss-style offensive BehaviorWeights and 24 PowerUpWeights. Changed Default, Challenge,
+ClassA/B/C/D/E, ClassBPlus/ClassCPlus/ClassDPlus/ClassEPlus, ClassALoser, and DuelSkeleton.
+Tutorial and all Boss* personalities were left alone. No CarDB/performance/speed edits in this
+stage, preserving v39 no-wheelie and no-shaking behavior. Script:
+make_v41_career_driver_special_spam_android.py. Signed with someless.keystore; cert digest matches
+v40. Installed successfully on device 101132535J112452 and launched into race.
+Screenshot: screenshots\v41_launch_20260531_195829.png.
+
+Current working APF/extracted source:
+Master bbr afp cracker\input\Assets.apf
+Master bbr afp cracker\extracted
+Master bbr afp cracker\output\Assets.apf
+
+Notes:
+- Continue future Android edits from Master bbr afp cracker.
+- The previous input/extracted/output folders were moved into:
+  Master bbr afp cracker\workspace_backups

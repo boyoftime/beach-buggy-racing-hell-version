@@ -1,0 +1,41 @@
+# ---- Secrets: NEVER commit ----
+*.keystore
+*.jks
+*.p12
+*.idsig
+
+# ---- Large binaries / build artifacts (use GitHub Releases instead) ----
+*.apk
+*.apf
+*.zip
+*.bin
+*.so
+*.dex
+
+# ---- Generated / decompiled / extracted trees ----
+build/
+versioned_builds/
+screenshots/
+**/extracted/
+**/input/
+**/output/
+**/mod_backups/
+**/workspace_backups/
+apktool_news_redirect/
+jadx_news_trace/
+android_daily_unlock_build/
+beach-buggy-mod_*/
+
+# ---- Disassembly dumps ----
+*_disasm.txt
+
+# ---- Image previews / contact sheets ----
+*.png
+*.jpg
+
+# ---- Python ----
+__pycache__/
+*.pyc
+_scan_*.py
+_check_*.py
+_verify*.py
