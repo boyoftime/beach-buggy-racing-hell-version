@@ -39,3 +39,7 @@ __pycache__/
 _scan_*.py
 _check_*.py
 _verify*.py
+
+# Published Hell Version screenshots
+!gallery/
+!gallery/*.png
